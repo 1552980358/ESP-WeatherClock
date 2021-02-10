@@ -48,7 +48,7 @@ void implement_clock();
 void implement_weather();
 
 void get_time();
-void get_weather();
+bool get_weather();
 
 void draw_clock();
 void draw_weather();
@@ -117,8 +117,7 @@ void implement_clock() {
 
 void implement_weather() {
     Serial.println("===== Weather =====");
-    get_weather();
-    draw_weather();
+    get_weather() ? draw_weather() : (void) Serial.println("- Getting Data Failed");
 }
 
 void get_time() {
@@ -137,7 +136,7 @@ void get_time() {
     day_cur = time_server.getDay();
 }
 
-void get_weather() {
+bool get_weather() {
     String resp;
     String icon_str;
     Serial.println("- Getting Data...");
@@ -148,7 +147,7 @@ void get_weather() {
         Serial.println(resp);
 
         if (resp.isEmpty()) {
-            return;
+            return false;
         }
 
         resp = resp.substring(resp.indexOf("\"icon\":") + 8);
@@ -195,6 +194,8 @@ void get_weather() {
         Serial.println(humidity);
 
     }
+
+    return true;
 }
 
 void draw_clock() {
