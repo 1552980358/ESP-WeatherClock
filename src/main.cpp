@@ -72,7 +72,8 @@ void setup() {
     screen.setFont(u8g2_font_wqy12_t_gb2312a);
     title_width = screen.getStrWidth("MAX ");
 
-    screen.drawXBMP(32, 0, 64, 64, launch_pic_great_wall);
+    // draw_great_wall(screen);
+    draw_tian_an_men(screen);
 
     screen.sendBuffer();
 
