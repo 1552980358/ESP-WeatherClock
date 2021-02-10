@@ -13,7 +13,7 @@
 #include <../lib/NTPClient/NTPClient.h>
 
 /** Own-defined header **/
-#include "wifi_metadata.h"
+#include "metadata.h"
 #include "launch_pic.h"
 
 HTTPClient http_client_weather;
