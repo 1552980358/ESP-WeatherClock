@@ -147,7 +147,9 @@ bool get_weather() {
         Serial.println(resp);
 
         if (resp.isEmpty()) {
-            return false;
+            if (temp_min == "-" || temp_max == "-" || pressure == "-" || humidity == "=")
+                return false;
+            return true;
         }
 
         resp = resp.substring(resp.indexOf("\"icon\":") + 8);
