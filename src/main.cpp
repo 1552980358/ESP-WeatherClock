@@ -140,7 +140,7 @@ bool get_weather() {
     String resp;
     String icon_str;
     Serial.println("- Getting Data...");
-    http_client_weather.begin(wifi_client_weather,"http://api.openweathermap.org/data/2.5/weather?id=1819609&appid=de815d60d8077177e2f482ab4f5b4a7a&units=metric");
+    http_client_weather.begin(wifi_client_weather, weather_url);
     if (http_client_weather.GET()) {
         resp = http_client_weather.getString();
 
