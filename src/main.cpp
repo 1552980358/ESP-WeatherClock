@@ -140,7 +140,7 @@ bool get_weather() {
     String resp;
     String icon_str;
     Serial.println("- Getting Data...");
-    http_client_weather.begin(wifi_client_weather, weather_url);
+    http_client_weather.begin(wifi_client_weather, weather_url.c_str());
     if (http_client_weather.GET()) {
         resp = http_client_weather.getString();
 
