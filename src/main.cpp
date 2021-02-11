@@ -45,12 +45,15 @@ WiFiUDP wifi_udp;
 NTPClient time_server(wifi_udp, "pool.ntp.org");
 
 void implement_clock();
+
 void implement_weather();
 
 void get_time();
+
 bool get_weather();
 
 void draw_clock();
+
 void draw_weather();
 
 void draw_bottom_bar();
@@ -124,7 +127,7 @@ void get_time() {
     Serial.println("- Getting Data...");
     time_server.update();
 
-    long epoch_time = time_server.getEpochTime();
+    long epoch_time = (long) time_server.getEpochTime();
     struct tm *ptm = gmtime((time_t *) &epoch_time);
 
     Serial.println("- Getting Data...");
@@ -140,62 +143,76 @@ bool get_weather() {
     String resp;
     String icon_str;
     Serial.println("- Getting Data...");
-    http_client_weather.begin(wifi_client_weather, weather_url.c_str());
-    if (http_client_weather.GET()) {
-        resp = http_client_weather.getString();
 
-        Serial.println(resp);
-
-        if (resp.isEmpty()) {
-            if (temp_min == "-" || temp_max == "-" || pressure == "-" || humidity == "=")
-                return false;
-            return true;
+    if (!http_client_weather.begin(wifi_client_weather, weather_url.c_str())) {
+        Serial.println("- Connection Error");
+        if (temp_min == "-" || temp_max == "-" || pressure == "-" || humidity == "=") {
+            return false;
         }
-
-        resp = resp.substring(resp.indexOf("\"icon\":") + 8);
-        icon_str = resp.substring(0, resp.indexOf("\"}"));
-
-        if (icon_str[0] == '0') {
-            if (icon_str[1] == '1') {
-                icon = icon_str[2] == 'd' ? 69 : 66;
-            } else {
-                switch (icon_str[1]) {
-                    case '2':
-                        icon = 65;
-                        break;
-                    case '9':
-                        icon = 67;
-                    case '3':
-                    case '4':
-                        icon = 64;
-                        break;
-                }
-            }
-        } else if (icon_str[1] == '1') {
-            icon = 67;
-        } else {
-            icon = 64;
-        }
-
-        Serial.println(icon_str);
-
-        resp = resp.substring(resp.indexOf("\"temp_min\":") + 11);
-        temp_min = resp.substring(0, resp.indexOf(",\""));
-        Serial.println(temp_min);
-
-        resp = resp.substring(resp.indexOf("\"temp_max\":") + 11);
-        temp_max = resp.substring(0, resp.indexOf(",\""));
-        Serial.println(temp_max);
-
-        resp = resp.substring(resp.indexOf("\"pressure\":") + 11);
-        pressure = resp.substring(0, resp.indexOf(",\""));
-        Serial.println(pressure);
-
-        resp = resp.substring(resp.indexOf("\"humidity\":") + 11);
-        humidity = resp.substring(0, resp.indexOf("},"));
-        Serial.println(humidity);
-
+        return true;
     }
+
+    auto http_code = http_client_weather.GET();
+    if (http_code <= 0) {
+        Serial.println("- HTTP/Connection Error: " + HTTPClient::errorToString(http_code));
+        if (temp_min == "-" || temp_max == "-" || pressure == "-" || humidity == "=") {
+            return false;
+        }
+        return true;
+    }
+
+    resp = http_client_weather.getString();
+
+    Serial.println(resp);
+
+    if (resp.isEmpty()) {
+        if (temp_min == "-" || temp_max == "-" || pressure == "-" || humidity == "=")
+            return false;
+        return true;
+    }
+
+    resp = resp.substring(resp.indexOf("\"icon\":") + 8);
+    icon_str = resp.substring(0, resp.indexOf("\"}"));
+
+    if (icon_str[0] == '0') {
+        if (icon_str[1] == '1') {
+            icon = icon_str[2] == 'd' ? 69 : 66;
+        } else {
+            switch (icon_str[1]) {
+                case '2':
+                    icon = 65;
+                    break;
+                case '9':
+                    icon = 67;
+                case '3':
+                case '4':
+                    icon = 64;
+                    break;
+            }
+        }
+    } else if (icon_str[1] == '1') {
+        icon = 67;
+    } else {
+        icon = 64;
+    }
+
+    Serial.println(icon_str);
+
+    resp = resp.substring(resp.indexOf("\"temp_min\":") + 11);
+    temp_min = resp.substring(0, resp.indexOf(",\""));
+    Serial.println(temp_min);
+
+    resp = resp.substring(resp.indexOf("\"temp_max\":") + 11);
+    temp_max = resp.substring(0, resp.indexOf(",\""));
+    Serial.println(temp_max);
+
+    resp = resp.substring(resp.indexOf("\"pressure\":") + 11);
+    pressure = resp.substring(0, resp.indexOf(",\""));
+    Serial.println(pressure);
+
+    resp = resp.substring(resp.indexOf("\"humidity\":") + 11);
+    humidity = resp.substring(0, resp.indexOf("},"));
+    Serial.println(humidity);
 
     return true;
 }
@@ -206,7 +223,7 @@ void draw_clock() {
     auto text_height = screen.getFontAscent();
     screen.drawStr((screen.getWidth() - screen.getStrWidth(date_cur.c_str())) / 2, text_height, date_cur.c_str());
     screen.setFont(u8g2_font_freedoomr25_tn);
-    screen.drawStr((screen.getWidth() - screen.getStrWidth(time_cur.c_str())) / 2,text_height * 1.2 + screen.getFontAscent(), time_cur.c_str());
+    screen.drawStr((screen.getWidth() - screen.getStrWidth(time_cur.c_str())) / 2, text_height * 1.2 + screen.getFontAscent(), time_cur.c_str());
 }
 
 void draw_weather() {
