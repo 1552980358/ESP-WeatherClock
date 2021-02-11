@@ -240,7 +240,7 @@ void draw_weather() {
     screen.drawStr(48 + title_width, height, tmp.c_str());
 
     height += screen.getFontAscent() * 1.2;
-    tmp = temp_max + "°C";
+    tmp = temp_min + "°C";
     screen.drawStr(48, height, "MIN");
     screen.drawStr(48 + title_width, height, tmp.c_str());
 
