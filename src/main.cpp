@@ -20,11 +20,47 @@ HTTPClient http_client_weather;
 
 WiFiClient wifi_client_weather;
 
-/** Screen **/
+/**
+ * Screen
+ * 屏幕
+ * 清根据设备手动删除注释(//)
+ *
+ * > U8G2_SSD1306_128X64_NONAME_F_HW_I2C screen(U8G2_R0, U8X8_PIN_NONE, D1, D2);
+ *   - 此为NodeMCU ESP-12E
+ *   - 接线方式为
+ *       1 开发板的D1连接屏幕的SCL
+ *       2 开发板的D2连接屏幕的SDA
+ *
+ * > U8G2_SSD1306_128X64_NONAME_F_HW_I2C screen(U8G2_R0, U8X8_PIN_NONE, 0, 3);
+ *   - 此为NodeMCU ESP-01S
+ *   - 接线方式为
+ *     1 开发板的IO0连接屏幕的SCL
+ *     2 开发板的RX连接屏幕的SDA
+ */
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C screen(U8G2_R0, U8X8_PIN_NONE, D1, D2);
+// U8G2_SSD1306_128X64_NONAME_F_HW_I2C screen(U8G2_R0, U8X8_PIN_NONE, 0, 3);
 
-/** DS18B20 Sensor **/
+/**
+ * DS18B20 Sensor
+ * DS18B20 传感器
+ * 清根据设备手动删除注释(//)
+ *
+ * > DS18B20 ds18B20(new OneWire(D3));
+ *   - 此为NodeMCU ESP-12E
+ *   - 接线方式为
+ *     1 开发板的D3连接传感器中间针脚
+ *
+ * > DS18B20 ds18B20(new OneWire(2));
+ *   - 此为NodeMCU ESP-01S
+ *   - 接线方式为
+ *     1 开发板的IO2连接传感器中间针脚
+ *
+ * !!!!!!!!!!
+ * 传感器的 [中间针脚] 记得要用一个电阻连接 [正极] 输入
+ * !!!!!!!!!!
+ **/
 DS18B20 ds18B20(new OneWire(D3));
+// DS18B20 ds18B20(new OneWire(2));
 
 const String months[] = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
 const String day[] = {"SUN", "MON", "TUE", "WED", "THU", "FIR", "SAT"};
